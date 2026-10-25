@@ -55,9 +55,10 @@ const MOVIMENTOS = [
   ["aguardando", "Aguardando"],
 ]
 
-function parte(valor) {
+function parte(valor, fino = false) {
   if (valor == null || Number.isNaN(valor)) return "—"
-  return `${valor.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`
+  const casas = fino && Math.abs(valor) < 10 ? 2 : 1
+  return `${valor.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas })}%`
 }
 
 function Leitura({ rotulo, lula = 0, flavio = 0, urnas = null }) {
@@ -70,7 +71,7 @@ function Leitura({ rotulo, lula = 0, flavio = 0, urnas = null }) {
         <strong>{rotulo}</strong>
         <span>
           {total ? `${votos(total)} votos` : "Sem voto nominal"}
-          {urnas == null ? "" : ` · ${parte(urnas)} das seções`}
+          {urnas == null ? "" : ` · ${parte(urnas, true)} das seções`}
         </span>
       </div>
       <div className="leitura-faixa">
