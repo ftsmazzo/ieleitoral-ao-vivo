@@ -58,7 +58,7 @@ async function baixar(url) {
   if (anterior?.etag) headers["If-None-Match"] = anterior.etag
   if (anterior?.modificado) headers["If-Modified-Since"] = anterior.modificado
   try {
-    const resposta = await fetch(url, { headers })
+    const resposta = await fetch(url, { headers, signal: AbortSignal.timeout(8000) })
     if (resposta.status === 304 && anterior) return anterior.dados
     if (resposta.status === 404 || resposta.status === 429) {
       const erro = new Error(`TSE ${resposta.status}`)
@@ -173,14 +173,15 @@ export function painelVazio() {
   return montar(ufs, exterior, null, "O primeiro turno está na mesa. O TSE ainda não respondeu.")
 }
 
-function montar(ufs, exterior, relogio, aviso) {
+function montar(ufs, exterior, relogio, aviso, nacional = null) {
   const t1 = somar(ufs, "lula1", "flavio1")
   const comVoto = ufs.filter((linha) => linha.lula2 + linha.flavio2 > 0)
   const t2 = somar(comVoto, "lula2", "flavio2")
   const lula1 = t1.lula + (exterior?.lula1 || 0)
   const flavio1 = t1.flavio + (exterior?.flavio1 || 0)
-  const lula2 = t2.lula + (exterior?.lula2 || 0)
-  const flavio2 = t2.flavio + (exterior?.flavio2 || 0)
+  const oficial = nacional && nacional.lula + nacional.flavio > 0
+  const lula2 = oficial ? nacional.lula : t2.lula + (exterior?.lula2 || 0)
+  const flavio2 = oficial ? nacional.flavio : t2.flavio + (exterior?.flavio2 || 0)
   return {
     gerado: new Date().toISOString(),
     aviso,
@@ -190,6 +191,7 @@ function montar(ufs, exterior, relogio, aviso) {
       flavio1,
       lula2,
       flavio2,
+      pct: nacional?.pct ?? null,
       margem1: margem(lula1, flavio1),
       margem2: lula2 + flavio2 > 0 ? margem(lula2, flavio2) : null,
     },
@@ -208,34 +210,37 @@ export async function lerPainel() {
       }
     }),
   )
+  const leituraBr = baixar(urlDe("br")).then((arquivo) => [arquivo, null]).catch((erro) => [null, erro])
   const leituraZz = baixar(urlDe("zz")).then((arquivo) => [arquivo, null]).catch((erro) => [null, erro])
-  const leituraCidades = emFila(exteriorFixo.locais, 12, async (fixo) => {
-    try {
-      return [fixo, await baixar(urlCidade(fixo.cd))]
-    } catch (erro) {
-      return [fixo, null, erro]
-    }
-  })
-  const [arquivos, zzPar, cidades] = await Promise.all([leituraUfs, leituraZz, leituraCidades])
+  const [arquivos, brPar, zzPar] = await Promise.all([leituraUfs, leituraBr, leituraZz])
+  const [brArquivo, brErro] = brPar
   const [zzArquivo, zzErro] = zzPar
+  const zzTemVoto = zzArquivo && candidato(zzArquivo, "13") + candidato(zzArquivo, "22") > 0
+  const cidades = zzTemVoto
+    ? await emFila(exteriorFixo.locais, 12, async (fixo) => {
+      try {
+        return [fixo, await baixar(urlCidade(fixo.cd))]
+      } catch (erro) {
+        return [fixo, null, erro]
+      }
+    })
+    : exteriorFixo.locais.map((fixo) => [fixo, null])
   const falhas = arquivos.filter((item) => item[2]).length
   const ufs = arquivos.map(([meta, arquivo]) => linhaDe(meta, arquivo))
   const exterior = exteriorDe(zzArquivo, cidades.map(([fixo, arquivo]) => linhaLocal(fixo, arquivo)))
-  const algum = arquivos.find((item) => item[1]) || (zzArquivo ? [null, zzArquivo] : null)
-  const relogio = algum
-    ? { data: algum[1].dg || "", hora: algum[1].hg || "" }
+  const nacional = brArquivo
+    ? { lula: candidato(brArquivo, "13"), flavio: candidato(brArquivo, "22"), pct: numero(brArquivo.s?.pstn ?? brArquivo.s?.pst) }
     : null
-  const bloqueio = arquivos.some((item) => item[2]?.status === 429) || zzErro?.status === 429 || cidades.some((item) => item[2]?.status === 429)
+  const relogio = brArquivo?.dg
+    ? { data: brArquivo.dg, hora: brArquivo.hg || "" }
+    : null
+  const bloqueio = arquivos.some((item) => item[2]?.status === 429) || brErro?.status === 429 || zzErro?.status === 429 || cidades.some((item) => item[2]?.status === 429)
   const aviso = bloqueio
     ? "O TSE pediu uma pausa. A mesa segura a última leitura por um minuto."
-    : falhas === UFS.length
-      ? "O TSE não devolveu as UFs nesta leitura. O primeiro turno continua na mesa."
-      : falhas
-        ? `${falhas} UFs não atualizaram nesta leitura.`
-        : zzErro
-          ? "O exterior não entrou nesta leitura. As 27 UFs continuam na mesa."
-          : null
-  const painel = montar(ufs, exterior, relogio, aviso)
+    : !brArquivo && falhas === UFS.length
+      ? "O TSE não devolveu a leitura. O primeiro turno continua na mesa."
+      : null
+  const painel = montar(ufs, exterior, relogio, aviso, nacional)
   painel.bloqueio = bloqueio
   return painel
 }

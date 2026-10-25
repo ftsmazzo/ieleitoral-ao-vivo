@@ -367,16 +367,6 @@ export function App() {
   }, [exterior, movimento, busca, soFirme, ordem])
 
   const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa."
-  const urnasBrasil = useMemo(() => {
-    let secoes = exterior?.secoes || 0
-    let apuradas = exterior?.apuradas || 0
-    for (const linha of ufs) {
-      secoes += linha.secoes || 0
-      apuradas += linha.apuradas || 0
-    }
-    if (!secoes) return null
-    return (apuradas / secoes) * 100
-  }, [ufs, exterior])
   const comVoto = (brasil?.lula2 || 0) + (brasil?.flavio2 || 0) > 0
   const falta = restante(agora)
   const relogio = comVoto && painel?.relogio?.hora
@@ -431,22 +421,11 @@ export function App() {
         <h1 className="tese">{frase}</h1>
         <section className="pista" aria-labelledby="nacional">
           <header>
-            <h2 id="nacional">Brasil, com o exterior</h2>
+            <h2 id="nacional">Brasil</h2>
           </header>
-          <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={urnasBrasil} />
+          <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={brasil?.pct ?? null} />
           <Anterior lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
         </section>
-        {exterior && (regiao === "todas" || regiao === "Estrangeiro") ? (
-          <section className="pista" aria-labelledby="estrangeiro">
-            <header>
-              <h2 id="estrangeiro">Estrangeiro</h2>
-            </header>
-            <Leitura rotulo="2º turno" lula={exterior.lula2} flavio={exterior.flavio2} urnas={exterior.pct} />
-            <Anterior lula={exterior.lula1} flavio={exterior.flavio1} />
-            <Leitura rotulo="Japão" lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} urnas={exterior.japao.pct} />
-            <Anterior lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
-          </section>
-        ) : null}
         <div className="filtros">
           <div className="movimentos" role="group" aria-label="Movimento da margem">
             {MOVIMENTOS.map(([id, nome]) => (
@@ -497,7 +476,7 @@ export function App() {
             vazio="Nenhuma UF entrou nesse recorte. Troque o movimento ou limpe a busca."
           />
         )}
-        {regiao === "todas" || regiao === "Estrangeiro" ? (
+        {regiao === "Estrangeiro" ? (
           <Tabela
             titulo="exterior-titulo"
             rotulo="Cidades no exterior"
