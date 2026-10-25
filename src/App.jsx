@@ -1,6 +1,19 @@
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { REGIOES, fraseBrasil } from "../shared/apuracao.mjs"
 import { familia, fatia, pp, quem, rotuloMovimento, votos } from "./format.js"
+import { pulso } from "./presenca.js"
+
+function useEstreito() {
+  const consulta = "(max-width: 860px)"
+  const [estreito, setEstreito] = useState(() => window.matchMedia(consulta).matches)
+  useEffect(() => {
+    const midia = window.matchMedia(consulta)
+    const aoMudar = () => setEstreito(midia.matches)
+    midia.addEventListener("change", aoMudar)
+    return () => midia.removeEventListener("change", aoMudar)
+  }, [])
+  return estreito
+}
 
 const MOVIMENTOS = [
   ["todas", "Todas"],
@@ -103,13 +116,42 @@ export function App() {
   const [ordem, setOrdem] = useState("mexeu")
   const [soFirme, setSoFirme] = useState(false)
   const [aberta, setAberta] = useState(null)
+  const [instalar, setInstalar] = useState(null)
+  const [dicaIos, setDicaIos] = useState(false)
+  const estreito = useEstreito()
+
+  useEffect(() => pulso(), [])
+
+  useEffect(() => {
+    const apple = /iPhone|iPad|iPod/.test(navigator.userAgent)
+    const instalado = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone
+    setDicaIos(apple && !instalado)
+  }, [])
+
+  useEffect(() => {
+    const aoOferecer = (evento) => {
+      evento.preventDefault()
+      setInstalar(evento)
+    }
+    window.addEventListener("beforeinstallprompt", aoOferecer)
+    return () => window.removeEventListener("beforeinstallprompt", aoOferecer)
+  }, [])
 
   useEffect(() => {
     let viva = true
+    let marca = ""
+    let timer = 0
     async function ler() {
       try {
-        const resposta = await fetch("/api/painel")
+        const resposta = await fetch("/api/painel", {
+          headers: marca ? { "If-None-Match": marca } : {},
+        })
+        if (resposta.status === 304) {
+          if (viva) setFalha(false)
+          return
+        }
         if (!resposta.ok) throw new Error("painel")
+        marca = resposta.headers.get("etag") || ""
         const dados = await resposta.json()
         if (viva) {
           setPainel(dados)
@@ -119,11 +161,28 @@ export function App() {
         if (viva) setFalha(true)
       }
     }
-    ler()
-    const id = setInterval(ler, 10000)
+    function agendar() {
+      const espera = document.visibilityState === "hidden" ? 60000 : 20000
+      timer = window.setTimeout(async () => {
+        await ler()
+        if (viva) agendar()
+      }, espera)
+    }
+    ler().then(() => {
+      if (viva) agendar()
+    })
+    const aoVoltar = () => {
+      if (document.visibilityState !== "visible") return
+      window.clearTimeout(timer)
+      ler().then(() => {
+        if (viva) agendar()
+      })
+    }
+    document.addEventListener("visibilitychange", aoVoltar)
     return () => {
       viva = false
-      clearInterval(id)
+      window.clearTimeout(timer)
+      document.removeEventListener("visibilitychange", aoVoltar)
     }
   }, [])
 
@@ -175,9 +234,20 @@ export function App() {
           </div>
         </a>
         <p className="relogio">
+          {instalar ? (
+            <button
+              type="button"
+              className="instalar"
+              onClick={() => {
+                instalar.prompt()
+                setInstalar(null)
+              }}
+            >
+              Instalar
+            </button>
+          ) : null}
           <span className="carimbo ao-vivo">Ao vivo</span>
-          <br />
-          {relogio}
+          <span className="hora">{relogio}</span>
         </p>
       </header>
       <main className="miolo" id="mesa">
@@ -200,7 +270,7 @@ export function App() {
             <span>O risco coral é o empate entre os dois.</span>
           </p>
         </section>
-        <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />
+        {estreito ? null : <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />}
         <div className="filtros">
           <div className="movimentos" role="group" aria-label="Movimento da margem">
             {MOVIMENTOS.map(([id, nome]) => (
@@ -319,6 +389,9 @@ export function App() {
             </table>
           )}
         </section>
+        {dicaIos ? (
+          <p className="legenda">Para deixar na tela de início: Compartilhar, depois Adicionar à Tela de Início.</p>
+        ) : null}
       </main>
     </>
   )

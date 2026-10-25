@@ -128,11 +128,15 @@ export async function lerPainel() {
   const relogio = algum
     ? { data: algum[1].dg || "", hora: algum[1].hg || "" }
     : null
-  const aviso =
-    falhas === UFS.length
+  const bloqueio = arquivos.some((item) => item[2]?.status === 429)
+  const aviso = bloqueio
+    ? "O TSE pediu uma pausa. A mesa segura a última leitura por um minuto."
+    : falhas === UFS.length
       ? "O TSE não devolveu as UFs nesta leitura. O primeiro turno continua na mesa."
       : falhas
         ? `${falhas} UFs não atualizaram nesta leitura.`
         : null
-  return montar(ufs, relogio, aviso)
+  const painel = montar(ufs, relogio, aviso)
+  painel.bloqueio = bloqueio
+  return painel
 }
