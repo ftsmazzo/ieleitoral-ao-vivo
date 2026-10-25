@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { restante } from "../shared/abertura.mjs"
 import { REGIOES, fraseBrasil } from "../shared/apuracao.mjs"
-import { familia, fatia, pp, quem, rotuloMovimento, votos } from "./format.js"
+import { familia, fatia, quem, rotuloMovimento, votos } from "./format.js"
 import { pulso } from "./presenca.js"
 
 function useAgora() {
@@ -59,6 +59,21 @@ function parte(valor, fino = false) {
   if (valor == null || Number.isNaN(valor)) return "—"
   const casas = fino && Math.abs(valor) < 10 ? 2 : 1
   return `${valor.toLocaleString("pt-BR", { minimumFractionDigits: casas, maximumFractionDigits: casas })}%`
+}
+
+function fatias(lula = 0, flavio = 0) {
+  const total = lula + flavio
+  if (!total) return null
+  const esquerda = (lula / total) * 100
+  return { total, esquerda, direita: 100 - esquerda }
+}
+
+function Anterior({ lula = 0, flavio = 0 }) {
+  const leitura = fatias(lula, flavio)
+  if (!leitura) return null
+  return (
+    <p className="anterior">1º turno · Lula {parte(leitura.esquerda)} · Flávio {parte(leitura.direita)}</p>
+  )
 }
 
 function Leitura({ rotulo, lula = 0, flavio = 0, urnas = null }) {
@@ -133,10 +148,9 @@ function Tabela({ titulo, rotulo, linhas, aberta, onAbrir, vazio }) {
           <thead>
             <tr>
               <th scope="col">Lugar</th>
-              <th scope="col">1º turno</th>
               <th scope="col">2º turno</th>
-              <th scope="col">Movimento</th>
               <th scope="col">Apurado</th>
+              <th scope="col">Movimento</th>
             </tr>
           </thead>
           <tbody>
@@ -145,6 +159,7 @@ function Tabela({ titulo, rotulo, linhas, aberta, onAbrir, vazio }) {
               const abriu = aberta === chave
               const codigo = familia(linha.movimento)
               const carimbo = linha.movimento.endsWith("parcial") ? "parcial" : codigo
+              const agora = fatias(linha.lula2, linha.flavio2)
               return (
                 <Fragment key={chave}>
                   <tr className="linha-uf" aria-expanded={abriu} onClick={() => onAbrir(abriu ? null : chave)}>
@@ -152,30 +167,23 @@ function Tabela({ titulo, rotulo, linhas, aberta, onAbrir, vazio }) {
                       {linha.uf ? <span className="sigla">{linha.uf}</span> : null}
                       <span className={linha.uf ? "nome-uf" : "sigla cidade"}>{linha.nome}</span>
                       {linha.japao ? <span className="nome-uf">Japão</span> : null}
+                      <Anterior lula={linha.lula1} flavio={linha.flavio1} />
                     </th>
-                    <td data-label="1º turno">
-                      <Trilho lula={linha.lula1} flavio={linha.flavio1} />
-                      <span className="numeros">{pp(linha.margem1)}</span>
-                    </td>
                     <td data-label="2º turno">
-                      <Trilho lula={linha.lula2} flavio={linha.flavio2} />
-                      <span className="numeros">{pp(linha.margem2)}</span>
+                      {agora ? (
+                        <span className="placar">
+                          <span className="voto lula"><b>{parte(agora.esquerda)}</b><span>Lula · {votos(linha.lula2)}</span></span>
+                          <span className="voto flavio"><b>{parte(agora.direita)}</b><span>Flávio · {votos(linha.flavio2)}</span></span>
+                        </span>
+                      ) : <span className="anterior">Sem voto nominal</span>}
+                    </td>
+                    <td className="numeros" data-label="Apurado">
+                      {linha.pct == null ? "—" : parte(linha.pct, true)}
                     </td>
                     <td data-label="Movimento">
                       <span className={`carimbo ${carimbo}`}>{rotuloMovimento(linha.movimento)}</span>
                     </td>
-                    <td className="numeros" data-label="Apurado">
-                      {linha.pct == null ? "—" : `${linha.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
-                    </td>
                   </tr>
-                  {abriu ? (
-                    <tr className="detalhe">
-                      <td colSpan="5">
-                        1º turno: Lula {votos(linha.lula1)} · Flávio {votos(linha.flavio1)}. 2º turno: Lula {votos(linha.lula2)} · Flávio {votos(linha.flavio2)}.
-                        {linha.movimento.endsWith("parcial") ? " Carimbo parcial: ainda não chegou a 95% das seções." : ""}
-                      </td>
-                    </tr>
-                  ) : null}
                 </Fragment>
               )
             })}
@@ -205,9 +213,6 @@ function Faixa({ ufs, ativa, onEscolher }) {
   return (
     <section className="faixa" aria-labelledby="faixa-titulo">
       <h2 id="faixa-titulo">Onde a margem andou</h2>
-      {ufs.every((linha) => linha.margem2 == null) ? (
-        <p className="quem faixa-nota">Os pontos ainda coincidem. O segundo turno não moveu.</p>
-      ) : null}
       <svg viewBox={`0 0 1000 ${altura}`} role="group" aria-label="Cada UF sai do primeiro turno e chega no segundo. À esquerda, Lula. À direita, Flávio.">
         <line className="zero" x1="500" y1="8" x2="500" y2={altura - 8} />
         <text className="escala" x="80" y="16">Lula +40</text>
@@ -428,26 +433,20 @@ export function App() {
           <header>
             <h2 id="nacional">Brasil, com o exterior</h2>
           </header>
-          <Leitura rotulo="1º turno" lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
           <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={urnasBrasil} />
-          <p className="legenda">
-            <span>A soma junta as 27 UFs e o estrangeiro.</span>
-            <span>O risco coral é o empate entre os dois.</span>
-          </p>
+          <Anterior lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
         </section>
         {exterior && (regiao === "todas" || regiao === "Estrangeiro") ? (
           <section className="pista" aria-labelledby="estrangeiro">
             <header>
               <h2 id="estrangeiro">Estrangeiro</h2>
             </header>
-            <Leitura rotulo="1º turno" lula={exterior.lula1} flavio={exterior.flavio1} />
             <Leitura rotulo="2º turno" lula={exterior.lula2} flavio={exterior.flavio2} urnas={exterior.pct} />
-            <Leitura rotulo="Japão · 1º turno" lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
-            <Leitura rotulo="Japão · 2º turno" lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} urnas={exterior.japao.pct} />
-            <p className="legenda">Esse recorte entra na soma de cima. Japão reúne Tóquio, Nagóia e Hamamatsu.</p>
+            <Anterior lula={exterior.lula1} flavio={exterior.flavio1} />
+            <Leitura rotulo="Japão" lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} urnas={exterior.japao.pct} />
+            <Anterior lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
           </section>
         ) : null}
-        {estreito || regiao === "Estrangeiro" ? null : <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />}
         <div className="filtros">
           <div className="movimentos" role="group" aria-label="Movimento da margem">
             {MOVIMENTOS.map(([id, nome]) => (
@@ -508,6 +507,7 @@ export function App() {
             vazio="Nenhuma cidade entrou nesse recorte. Troque o movimento ou limpe a busca."
           />
         ) : null}
+        {estreito || regiao === "Estrangeiro" ? null : <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />}
         {dicaIos ? (
           <p className="legenda">Para deixar na tela de início: Compartilhar, depois Adicionar à Tela de Início.</p>
         ) : null}

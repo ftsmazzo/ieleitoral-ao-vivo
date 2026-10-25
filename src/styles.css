@@ -373,6 +373,38 @@ main[hidden] { display: none; }
 .lado.flavio { text-align: right; }
 .lado.flavio b { color: var(--flavio); }
 
+.anterior {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.placar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: baseline;
+}
+
+.voto b {
+  display: block;
+  font-family: "Archivo Black", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.voto span {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+}
+
+.voto.lula b { color: var(--lula); }
+.voto.flavio b { color: var(--flavio); }
+
 .legenda {
   display: flex;
   gap: 16px;
@@ -518,9 +550,27 @@ main[hidden] { display: none; }
   letter-spacing: -0.03em;
 }
 
-.sigla.cidade { font-size: 0.95rem; letter-spacing: 0; }
+.sigla.cidade {
+  font-family: Literata, Georgia, serif;
+  font-size: 1rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
 
-.nome-uf { display: block; color: var(--muted); font-size: 0.92rem; }
+.nome-uf {
+  display: block;
+  font-family: Literata, Georgia, serif;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.ledger th .anterior {
+  font-family: Literata, Georgia, serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
 
 .numeros {
   font-variant-numeric: tabular-nums;
@@ -591,12 +641,10 @@ main[hidden] { display: none; }
   .ledger tr.linha-uf td { display: block; border: 0; padding: 0; }
   .ledger tr.linha-uf th { grid-column: 1; }
   .ledger tr.linha-uf td[data-label="Movimento"] { grid-column: 2; grid-row: 1; justify-self: end; align-self: center; }
-  .ledger tr.linha-uf td[data-label="1º turno"] { grid-column: 1; }
-  .ledger tr.linha-uf td[data-label="2º turno"] { grid-column: 2; }
+  .ledger tr.linha-uf td[data-label="2º turno"],
   .ledger tr.linha-uf td[data-label="Apurado"] { grid-column: 1 / -1; }
   .ledger tr.detalhe { display: block; padding: 0 14px 14px; border-bottom: 1px solid var(--line); }
   .ledger tr.detalhe td { display: block; border: 0; padding: 0; }
-  .ledger td[data-label="1º turno"]::before,
   .ledger td[data-label="2º turno"]::before,
   .ledger td[data-label="Apurado"]::before {
     content: attr(data-label);
