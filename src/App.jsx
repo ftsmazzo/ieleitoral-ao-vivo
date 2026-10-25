@@ -55,6 +55,39 @@ const MOVIMENTOS = [
   ["aguardando", "Aguardando"],
 ]
 
+function parte(valor) {
+  if (valor == null || Number.isNaN(valor)) return "—"
+  return `${valor.toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}%`
+}
+
+function Leitura({ rotulo, lula = 0, flavio = 0, urnas = null }) {
+  const total = lula + flavio
+  const esquerda = total ? (lula / total) * 100 : null
+  const direita = esquerda == null ? null : 100 - esquerda
+  return (
+    <div className="leitura">
+      <div className="leitura-topo">
+        <strong>{rotulo}</strong>
+        <span>
+          {total ? `${votos(total)} votos` : "Sem voto nominal"}
+          {urnas == null ? "" : ` · ${parte(urnas)} das seções`}
+        </span>
+      </div>
+      <div className="leitura-faixa">
+        <p className="lado lula">
+          <b>{parte(esquerda)}</b>
+          <span>Lula · {votos(lula)}</span>
+        </p>
+        <Trilho largo lula={lula} flavio={flavio} />
+        <p className="lado flavio">
+          <b>{parte(direita)}</b>
+          <span>Flávio · {votos(flavio)}</span>
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function Trilho({ lula, flavio, largo = false }) {
   const total = (lula || 0) + (flavio || 0)
   const texto = quem(lula, flavio)
@@ -328,6 +361,16 @@ export function App() {
   }, [exterior, movimento, busca, soFirme, ordem])
 
   const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa."
+  const urnasBrasil = useMemo(() => {
+    let secoes = exterior?.secoes || 0
+    let apuradas = exterior?.apuradas || 0
+    for (const linha of ufs) {
+      secoes += linha.secoes || 0
+      apuradas += linha.apuradas || 0
+    }
+    if (!secoes) return null
+    return (apuradas / secoes) * 100
+  }, [ufs, exterior])
   const comVoto = (brasil?.lula2 || 0) + (brasil?.flavio2 || 0) > 0
   const falta = restante(agora)
   const relogio = comVoto && painel?.relogio?.hora
@@ -384,15 +427,11 @@ export function App() {
           <header>
             <h2 id="nacional">Brasil, com o exterior</h2>
           </header>
-          <p className="quem">1º turno · {brasil ? quem(brasil.lula1, brasil.flavio1) : "…"}</p>
-          <Trilho largo lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
-          <p className="quem">2º turno · {brasil ? quem(brasil.lula2, brasil.flavio2) : "…"}</p>
-          <Trilho largo lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} />
+          <Leitura rotulo="1º turno" lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
+          <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={urnasBrasil} />
           <p className="legenda">
-            <span><i className="lula" /> Lula</span>
-            <span><i className="flavio" /> Flávio</span>
-            <span>O risco coral é o empate entre os dois.</span>
             <span>A soma junta as 27 UFs e o estrangeiro.</span>
+            <span>O risco coral é o empate entre os dois.</span>
           </p>
         </section>
         {exterior && (regiao === "todas" || regiao === "Estrangeiro") ? (
@@ -400,17 +439,10 @@ export function App() {
             <header>
               <h2 id="estrangeiro">Estrangeiro</h2>
             </header>
-            <p className="quem">1º turno · {quem(exterior.lula1, exterior.flavio1)}</p>
-            <Trilho largo lula={exterior.lula1} flavio={exterior.flavio1} />
-            <p className="quem">2º turno · {quem(exterior.lula2, exterior.flavio2)}</p>
-            <Trilho largo lula={exterior.lula2} flavio={exterior.flavio2} />
-            <p className="quem">Japão · 1º turno · {quem(exterior.japao.lula1, exterior.japao.flavio1)}</p>
-            <Trilho largo lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
-            <p className="quem">
-              Japão · 2º turno · {quem(exterior.japao.lula2, exterior.japao.flavio2)}
-              {exterior.japao.pct == null ? "" : ` · ${exterior.japao.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
-            </p>
-            <Trilho largo lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} />
+            <Leitura rotulo="1º turno" lula={exterior.lula1} flavio={exterior.flavio1} />
+            <Leitura rotulo="2º turno" lula={exterior.lula2} flavio={exterior.flavio2} urnas={exterior.pct} />
+            <Leitura rotulo="Japão · 1º turno" lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
+            <Leitura rotulo="Japão · 2º turno" lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} urnas={exterior.japao.pct} />
             <p className="legenda">Esse recorte entra na soma de cima. Japão reúne Tóquio, Nagóia e Hamamatsu.</p>
           </section>
         ) : null}
