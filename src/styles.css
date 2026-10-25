@@ -413,6 +413,7 @@ main[hidden] { display: none; }
   stroke: var(--night);
   stroke-width: 1.2;
   cursor: pointer;
+  outline: none;
 }
 
 .uf-mapa.lula { fill: var(--lula); }

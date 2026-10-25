@@ -100,7 +100,15 @@ export function Mapa({ ufs, regiao, busca }) {
                   if (evento.pointerType === "mouse") return
                   setAtiva((atual) => (atual === forma.uf ? null : forma.uf))
                 }}
-                onFocus={() => setAtiva(forma.uf)}
+                onFocus={(evento) => {
+                  setAtiva(forma.uf)
+                  const box = caixa.current?.getBoundingClientRect()
+                  const alvo = evento.currentTarget.getBoundingClientRect()
+                  if (!box) return
+                  const x = Math.min(Math.max(alvo.left - box.left + 8, 8), Math.max(8, box.width - 228))
+                  const y = Math.min(Math.max(alvo.top - box.top + 8, 8), Math.max(8, box.height - 148))
+                  setPosicao({ x, y })
+                }}
                 onBlur={(evento) => {
                   if (caixa.current?.contains(evento.relatedTarget)) return
                   setAtiva(null)
