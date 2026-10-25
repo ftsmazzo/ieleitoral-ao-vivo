@@ -1,0 +1,325 @@
+import { Fragment, useEffect, useMemo, useState } from "react"
+import { REGIOES, fraseBrasil } from "../shared/apuracao.mjs"
+import { familia, fatia, pp, quem, rotuloMovimento, votos } from "./format.js"
+
+const MOVIMENTOS = [
+  ["todas", "Todas"],
+  ["virou", "Virou"],
+  ["aumentou", "Aumentou"],
+  ["diminuiu", "Diminuiu"],
+  ["aguardando", "Aguardando"],
+]
+
+function Trilho({ lula, flavio, largo = false }) {
+  const total = (lula || 0) + (flavio || 0)
+  const texto = quem(lula, flavio)
+  const esquerda = fatia(lula, flavio)
+  return (
+    <div
+      className={largo ? "trilho largo" : "trilho mini"}
+      role="img"
+      aria-label={texto}
+    >
+      {total > 0 ? <b className="lula" style={{ width: `${esquerda}%` }} /> : null}
+      {total > 0 ? <b className="flavio" style={{ width: `${100 - esquerda}%` }} /> : null}
+      <i />
+    </div>
+  )
+}
+
+function escala(valor) {
+  const ppValor = (valor || 0) * 100
+  const limitado = Math.max(-40, Math.min(40, ppValor))
+  return 80 + ((40 - limitado) / 80) * 840
+}
+
+function Faixa({ ufs, ativa, onEscolher }) {
+  const bandas = REGIOES.map((regiao) => ufs.filter((linha) => linha.regiao === regiao))
+  const altura = 56 + bandas.reduce((soma, banda) => soma + 22 + banda.length * 18, 0)
+  let y = 48
+  const blocos = bandas.map((banda) => {
+    const topo = y
+    y += 22 + banda.length * 18
+    return { topo, banda }
+  })
+
+  return (
+    <section className="faixa" aria-labelledby="faixa-titulo">
+      <h2 id="faixa-titulo">Onde a margem andou</h2>
+      {ufs.every((linha) => linha.margem2 == null) ? (
+        <p className="quem faixa-nota">Os pontos ainda coincidem. O segundo turno não moveu.</p>
+      ) : null}
+      <svg viewBox={`0 0 1000 ${altura}`} role="group" aria-label="Cada UF sai do primeiro turno e chega no segundo. À esquerda, Lula. À direita, Flávio.">
+        <line className="zero" x1="500" y1="8" x2="500" y2={altura - 8} />
+        <text className="escala" x="80" y="16">Lula +40</text>
+        <text className="escala" x="470" y="16">0</text>
+        <text className="escala" x="860" y="16">Flávio +40</text>
+        {blocos.map(({ topo, banda }) => (
+          <g key={banda[0]?.regiao || topo}>
+            <text className="reg-label" x="16" y={topo}>
+              {banda[0]?.regiao}
+            </text>
+            {banda.map((linha, indice) => {
+              const cy = topo + 20 + indice * 18
+              const x1 = escala(linha.margem1)
+              const x2 = escala(linha.margem2 == null ? linha.margem1 : linha.margem2)
+              const movimento = familia(linha.movimento)
+              return (
+                  <g
+                  key={linha.uf}
+                  className="uf-hit"
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={ativa === linha.uf}
+                  aria-label={`${linha.nome}, ${rotuloMovimento(linha.movimento)}`}
+                  onClick={() => onEscolher(linha.uf)}
+                  onKeyDown={(evento) => {
+                    if (evento.key === "Enter" || evento.key === " ") {
+                      evento.preventDefault()
+                      onEscolher(linha.uf)
+                    }
+                  }}
+                >
+                  <line className={movimento === "virou" ? "elo virou" : "elo"} x1={x1} y1={cy} x2={x2} y2={cy} />
+                  <circle className="tick-1" cx={x1} cy={cy} r="3.5" />
+                  <circle className="tick-2" cx={x2} cy={cy} r={linha.margem2 == null ? 3.5 : 5} />
+                  <text className="uf-label" x="928" y={cy + 4}>{linha.uf}</text>
+                </g>
+              )
+            })}
+          </g>
+        ))}
+      </svg>
+    </section>
+  )
+}
+
+export function App() {
+  const [painel, setPainel] = useState(null)
+  const [falha, setFalha] = useState(false)
+  const [movimento, setMovimento] = useState("todas")
+  const [regiao, setRegiao] = useState("todas")
+  const [busca, setBusca] = useState("")
+  const [ordem, setOrdem] = useState("mexeu")
+  const [soFirme, setSoFirme] = useState(false)
+  const [aberta, setAberta] = useState(null)
+
+  useEffect(() => {
+    let viva = true
+    async function ler() {
+      try {
+        const resposta = await fetch("/api/painel")
+        if (!resposta.ok) throw new Error("painel")
+        const dados = await resposta.json()
+        if (viva) {
+          setPainel(dados)
+          setFalha(false)
+        }
+      } catch {
+        if (viva) setFalha(true)
+      }
+    }
+    ler()
+    const id = setInterval(ler, 10000)
+    return () => {
+      viva = false
+      clearInterval(id)
+    }
+  }, [])
+
+  const ufs = painel?.ufs || []
+  const brasil = painel?.brasil
+
+  const visiveis = useMemo(() => {
+    const texto = busca.trim().toLowerCase()
+    const lista = ufs.filter((linha) => {
+      if (regiao !== "todas" && linha.regiao !== regiao) return false
+      if (movimento !== "todas" && familia(linha.movimento) !== movimento) return false
+      if (soFirme && (linha.pct == null || linha.pct < 95)) return false
+      if (!texto) return true
+      return linha.uf.toLowerCase().includes(texto) || linha.nome.toLowerCase().includes(texto)
+    })
+    const delta = (linha) => (linha.margem2 == null ? null : Math.abs(linha.margem2 - linha.margem1))
+    lista.sort((a, b) => {
+      if (ordem === "uf") return a.nome.localeCompare(b.nome, "pt-BR")
+      if (ordem === "apurado") return (b.pct || 0) - (a.pct || 0)
+      if (ordem === "margem") return Math.abs(b.margem2 || 0) - Math.abs(a.margem2 || 0)
+      const da = delta(a)
+      const db = delta(b)
+      if (da == null && db == null) return Math.abs(a.margem1) - Math.abs(b.margem1)
+      if (da == null) return 1
+      if (db == null) return -1
+      return db - da
+    })
+    return lista
+  }, [ufs, regiao, movimento, busca, soFirme, ordem])
+
+  const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa das 27 UFs."
+  const relogio = painel?.relogio?.hora
+    ? `TSE ${painel.relogio.data} ${painel.relogio.hora}`
+    : "Aguardando o relógio do TSE"
+
+  function escolherUf(uf) {
+    setBusca((atual) => (atual.toUpperCase() === uf ? "" : uf))
+    setAberta(uf)
+  }
+
+  return (
+    <>
+      <header className="topo">
+        <a className="marca" href="#mesa">
+          <img src="/logo-ie.png" alt="Inteligência Eleitoral" />
+          <div>
+            <strong>IEleitoral Ao Vivo</strong>
+            <span>Presidente, margem por UF</span>
+          </div>
+        </a>
+        <p className="relogio">
+          <span className="carimbo ao-vivo">Ao vivo</span>
+          <br />
+          {relogio}
+        </p>
+      </header>
+      <main className="miolo" id="mesa">
+        {falha ? (
+          <p className="aviso" role="alert">A sala perdeu a leitura desta vez. A página tenta de novo em alguns segundos.</p>
+        ) : null}
+        {painel?.aviso ? <p className="aviso">{painel.aviso}</p> : null}
+        <h1 className="tese">{frase}</h1>
+        <section className="pista" aria-labelledby="nacional">
+          <header>
+            <h2 id="nacional">27 UFs, sem o exterior</h2>
+          </header>
+          <p className="quem">1º turno · {brasil ? quem(brasil.lula1, brasil.flavio1) : "…"}</p>
+          <Trilho largo lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
+          <p className="quem">2º turno · {brasil ? quem(brasil.lula2, brasil.flavio2) : "…"}</p>
+          <Trilho largo lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} />
+          <p className="legenda">
+            <span><i className="lula" /> Lula</span>
+            <span><i className="flavio" /> Flávio</span>
+            <span>O risco coral é o empate entre os dois.</span>
+          </p>
+        </section>
+        <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />
+        <div className="filtros">
+          <div className="movimentos" role="group" aria-label="Movimento da margem">
+            {MOVIMENTOS.map(([id, nome]) => (
+              <button key={id} type="button" aria-pressed={movimento === id} onClick={() => setMovimento(id)}>
+                {nome}
+              </button>
+            ))}
+          </div>
+          <label className="campo">
+            <span>Região</span>
+            <select value={regiao} onChange={(evento) => setRegiao(evento.target.value)}>
+              <option value="todas">Todas</option>
+              {REGIOES.map((nome) => (
+                <option key={nome} value={nome}>{nome}</option>
+              ))}
+            </select>
+          </label>
+          <label className="campo">
+            <span>UF</span>
+            <input
+              value={busca}
+              placeholder="Sigla ou nome"
+              onChange={(evento) => setBusca(evento.target.value)}
+            />
+          </label>
+          <label className="campo">
+            <span>Ordem</span>
+            <select value={ordem} onChange={(evento) => setOrdem(evento.target.value)}>
+              <option value="mexeu">O que mais mexeu</option>
+              <option value="margem">Maior margem agora</option>
+              <option value="apurado">Mais apurado</option>
+              <option value="uf">Nome</option>
+            </select>
+          </label>
+          <label className="check">
+            <input type="checkbox" checked={soFirme} onChange={(evento) => setSoFirme(evento.target.checked)} />
+            <span>Só leitura firme</span>
+          </label>
+        </div>
+        <section className="ledger" aria-labelledby="ledger-titulo">
+          <h2 id="ledger-titulo">Unidades</h2>
+          {visiveis.length === 0 ? (
+            <p className="vazio">Nenhuma UF entrou nesse recorte. Troque o movimento ou limpe a busca.</p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">UF</th>
+                  <th scope="col">1º turno</th>
+                  <th scope="col">2º turno</th>
+                  <th scope="col">
+                    <button
+                      type="button"
+                      aria-sort={ordem === "mexeu" ? "descending" : "none"}
+                      onClick={() => setOrdem("mexeu")}
+                    >
+                      Movimento
+                    </button>
+                  </th>
+                  <th scope="col">
+                    <button
+                      type="button"
+                      aria-sort={ordem === "apurado" ? "descending" : "none"}
+                      onClick={() => setOrdem("apurado")}
+                    >
+                      Apurado
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {visiveis.map((linha) => {
+                  const abriu = aberta === linha.uf
+                  const codigo = familia(linha.movimento)
+                  const carimbo = linha.movimento.endsWith("parcial") ? "parcial" : codigo
+                  return (
+                    <Fragment key={linha.uf}>
+                      <tr
+                        className="linha-uf"
+                        aria-expanded={abriu}
+                        onClick={() => setAberta(abriu ? null : linha.uf)}
+                      >
+                        <th scope="row">
+                          <span className="sigla">{linha.uf}</span>
+                          <span className="nome-uf">{linha.nome}</span>
+                        </th>
+                        <td data-label="1º turno">
+                          <Trilho lula={linha.lula1} flavio={linha.flavio1} />
+                          <span className="numeros">{pp(linha.margem1)}</span>
+                        </td>
+                        <td data-label="2º turno">
+                          <Trilho lula={linha.lula2} flavio={linha.flavio2} />
+                          <span className="numeros">{pp(linha.margem2)}</span>
+                        </td>
+                        <td data-label="Movimento">
+                          <span className={`carimbo ${carimbo}`}>{rotuloMovimento(linha.movimento)}</span>
+                        </td>
+                        <td className="numeros" data-label="Apurado">
+                          {linha.pct == null ? "—" : `${linha.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
+                        </td>
+                      </tr>
+                      {abriu ? (
+                        <tr className="detalhe">
+                          <td colSpan="5">
+                            1º turno: Lula {votos(linha.lula1)} · Flávio {votos(linha.flavio1)}. 2º turno: Lula {votos(linha.lula2)} · Flávio {votos(linha.flavio2)}.
+                            {linha.movimento.endsWith("parcial")
+                              ? " Carimbo parcial: esta UF ainda não chegou a 95% das seções."
+                              : ""}
+                          </td>
+                        </tr>
+                      ) : null}
+                    </Fragment>
+                  )
+                })}
+              </tbody>
+            </table>
+          )}
+        </section>
+      </main>
+    </>
+  )
+}
