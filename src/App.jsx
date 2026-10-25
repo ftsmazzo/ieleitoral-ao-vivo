@@ -18,7 +18,7 @@ function Portada({ agora, onEntrar }) {
   return (
     <section className="portada" aria-labelledby="portada-titulo">
       <p className="portada-olho">Horário de Brasília</p>
-      <h1 id="portada-titulo">
+      <h1 id="portada-titulo" className={falta.aberto ? undefined : "uma-linha"}>
         {falta.aberto ? "Já são 17h. O arquivo ainda não trouxe voto nominal." : "O segundo turno abre às 17h."}
       </h1>
       {falta.aberto ? (
@@ -30,9 +30,6 @@ function Portada({ agora, onEntrar }) {
           <p><b>{falta.segundos}</b><span>segundos</span></p>
         </div>
       )}
-      <p className="portada-nota">
-        O carimbo 13/10/2026 17:42:47 é a hora em que o TSE gerou o arquivo vazio do segundo turno. Ele fica parado até o tribunal regravar esse arquivo.
-      </p>
       <button type="button" className="entrar" onClick={onEntrar}>Ver o primeiro turno</button>
     </section>
   )
