@@ -6,6 +6,7 @@ import { UFS, classificar, margem, somar } from "../shared/apuracao.mjs"
 const raiz = dirname(fileURLToPath(import.meta.url))
 const primeiro = JSON.parse(readFileSync(join(raiz, "..", "data", "primeiro-turno.json"), "utf8"))
 const exteriorFixo = JSON.parse(readFileSync(join(raiz, "..", "data", "exterior-primeiro.json"), "utf8"))
+const censoPrimeiro = JSON.parse(readFileSync(join(raiz, "..", "data", "censo-primeiro.json"), "utf8"))
 const base = new Map(primeiro.ufs.map((linha) => [linha.uf, linha]))
 const JAPAO = new Set(["29742", "30198", "30627"])
 
@@ -35,6 +36,26 @@ function numero(valor) {
   const limpo = String(valor).replace(/\./g, "").replace(",", ".")
   const n = Number(limpo)
   return Number.isFinite(n) ? n : 0
+}
+
+function censoDe(arquivo) {
+  if (!arquivo?.v || !arquivo?.e) return null
+  const brancos = numero(arquivo.v.vb)
+  const nulos = numero(arquivo.v.tvn)
+  const abstencao = numero(arquivo.e.a)
+  const votosTotais = numero(arquivo.v.tv)
+  const aptos = numero(arquivo.e.est)
+  if (brancos + nulos + abstencao + votosTotais === 0) return null
+  return {
+    brancos,
+    nulos,
+    abstencao,
+    votos: votosTotais,
+    aptos,
+    pBrancos: numero(arquivo.v.pvbn),
+    pNulos: numero(arquivo.v.ptvnn),
+    pAbstencao: numero(arquivo.e.pan),
+  }
 }
 
 function candidato(arquivo, numeroCandidato) {
@@ -194,6 +215,8 @@ function montar(ufs, exterior, relogio, aviso, nacional = null) {
       pct: nacional?.pct ?? null,
       margem1: margem(lula1, flavio1),
       margem2: lula2 + flavio2 > 0 ? margem(lula2, flavio2) : null,
+      censo: nacional?.censo || null,
+      censo1: censoPrimeiro,
     },
     exterior,
     ufs,
@@ -229,7 +252,12 @@ export async function lerPainel() {
   const ufs = arquivos.map(([meta, arquivo]) => linhaDe(meta, arquivo))
   const exterior = exteriorDe(zzArquivo, cidades.map(([fixo, arquivo]) => linhaLocal(fixo, arquivo)))
   const nacional = brArquivo
-    ? { lula: candidato(brArquivo, "13"), flavio: candidato(brArquivo, "22"), pct: numero(brArquivo.s?.pstn ?? brArquivo.s?.pst) }
+    ? {
+      lula: candidato(brArquivo, "13"),
+      flavio: candidato(brArquivo, "22"),
+      pct: numero(brArquivo.s?.pstn ?? brArquivo.s?.pst),
+      censo: censoDe(brArquivo),
+    }
     : null
   const relogio = brArquivo?.dg
     ? { data: brArquivo.dg, hora: brArquivo.hg || "" }

@@ -77,6 +77,41 @@ function Anterior({ lula = 0, flavio = 0 }) {
   )
 }
 
+function parteCenso(valor) {
+  if (valor == null || Number.isNaN(valor)) return "—"
+  return `${valor.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+}
+
+function Censo({ atual, antes }) {
+  const total = (atual?.brancos || 0) + (atual?.nulos || 0) + (atual?.abstencao || 0)
+  if (!atual || !total || !atual.aptos) return null
+  const largura = (valor) => `${(valor / atual.aptos) * 100}%`
+  return (
+    <div className="censo">
+      <p className="censo-onde">Nas seções apuradas</p>
+      <div
+        className="trilho censo-barra"
+        role="img"
+        aria-label={`Brancos ${votos(atual.brancos)}, nulos ${votos(atual.nulos)}, abstenção ${votos(atual.abstencao)}`}
+      >
+        <b className="brancos" style={{ width: largura(atual.brancos) }} />
+        <b className="nulos" style={{ width: largura(atual.nulos) }} />
+        <b className="abstencao" style={{ width: largura(atual.abstencao) }} />
+      </div>
+      <p className="legenda censo-legenda">
+        <span><i className="brancos" /> Brancos {parteCenso(atual.pBrancos)} · {votos(atual.brancos)}</span>
+        <span><i className="nulos" /> Nulos {parteCenso(atual.pNulos)} · {votos(atual.nulos)}</span>
+        <span><i className="abstencao" /> Abstenção {parteCenso(atual.pAbstencao)} · {votos(atual.abstencao)}</span>
+      </p>
+      {antes ? (
+        <p className="anterior">
+          No primeiro turno, brancos foram {parteCenso(antes.pBrancos)}, nulos {parteCenso(antes.pNulos)} e a abstenção {parteCenso(antes.pAbstencao)}.
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
 function Leitura({ rotulo, lula = 0, flavio = 0, urnas = null }) {
   const total = lula + flavio
   const esquerda = total ? (lula / total) * 100 : null
@@ -426,6 +461,7 @@ export function App() {
           </header>
           <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={brasil?.pct ?? null} />
           <Anterior lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
+          <Censo atual={brasil?.censo} antes={brasil?.censo1} />
         </section>
         {regiao === "Estrangeiro" ? null : <Mapa ufs={ufs} regiao={regiao} busca={busca} />}
         <div className="filtros">

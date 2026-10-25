@@ -332,6 +332,22 @@ main[hidden] { display: none; }
 
 .trilho.largo { height: 42px; }
 
+.censo { margin-top: 14px; }
+.censo-onde {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.trilho.censo-barra { height: 14px; }
+.trilho.censo-barra b.brancos { background: var(--paper); }
+.trilho.censo-barra b.nulos { background: #9a8f84; }
+.trilho.censo-barra b.abstencao { background: #6f8f9a; }
+.censo-legenda { flex-wrap: wrap; font-size: 0.86rem; }
+.legenda i.brancos { background: var(--paper); }
+.legenda i.nulos { background: #9a8f84; }
+.legenda i.abstencao { background: #6f8f9a; }
+.censo .anterior { margin-top: 8px; }
+
 .leitura { margin-top: 16px; }
 
 .leitura-topo {
