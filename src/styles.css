@@ -405,6 +405,50 @@ main[hidden] { display: none; }
 .voto.lula b { color: var(--lula); }
 .voto.flavio b { color: var(--flavio); }
 
+.mapa-caixa { position: relative; }
+
+.mapa svg { display: block; width: 100%; height: auto; }
+
+.uf-mapa {
+  stroke: var(--night);
+  stroke-width: 1.2;
+  cursor: pointer;
+}
+
+.uf-mapa.lula { fill: var(--lula); }
+.uf-mapa.flavio { fill: var(--flavio); }
+.uf-mapa.empate { fill: var(--paper); }
+.uf-mapa.vazio { fill: #2c2926; }
+.uf-mapa.apagado { opacity: 0.28; }
+.uf-mapa.ativo, .uf-mapa:hover { stroke: var(--paper); stroke-width: 2; }
+
+.ficha, .ficha-flutuante .ficha {
+  background: var(--night);
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+}
+
+.ficha strong {
+  display: block;
+  font-family: "Archivo Black", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.ficha > span { display: block; margin-top: 4px; color: var(--muted); font-size: 0.86rem; }
+.ficha .placar { margin-top: 10px; }
+
+.ficha-flutuante {
+  position: absolute;
+  z-index: 2;
+  width: 220px;
+  pointer-events: none;
+}
+
+.mapa-legenda { margin-top: 12px; }
+.legenda i.vazio { background: #2c2926; border: 1px solid var(--line); }
+
 .legenda {
   display: flex;
   gap: 16px;

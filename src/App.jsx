@@ -2,6 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import { restante } from "../shared/abertura.mjs"
 import { REGIOES, fraseBrasil } from "../shared/apuracao.mjs"
 import { familia, fatia, quem, rotuloMovimento, votos } from "./format.js"
+import { Mapa } from "./Mapa.jsx"
 import { pulso } from "./presenca.js"
 
 function useAgora() {
@@ -426,6 +427,7 @@ export function App() {
           <Leitura rotulo="2º turno" lula={brasil?.lula2 || 0} flavio={brasil?.flavio2 || 0} urnas={brasil?.pct ?? null} />
           <Anterior lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
         </section>
+        {regiao === "Estrangeiro" ? null : <Mapa ufs={ufs} regiao={regiao} busca={busca} />}
         <div className="filtros">
           <div className="movimentos" role="group" aria-label="Movimento da margem">
             {MOVIMENTOS.map(([id, nome]) => (
