@@ -44,14 +44,34 @@ export function Audiencia() {
         </a>
       </header>
       <main className="miolo">
-        <h1 className="tese">Aparelhos na mesa</h1>
+        <h1 className="tese">IPs na mesa</h1>
         {!chave ? <p className="aviso">Esta leitura fica com a equipe. Abra o endereço que vocês guardaram.</p> : null}
         {falha ? <p className="aviso" role="alert">A contagem não respondeu. A página tenta de novo.</p> : null}
         <section className="pista">
           <h2>Agora</h2>
-          <p className="quem">{dados ? dados.agora.toLocaleString("pt-BR") : "…"} páginas abertas</p>
-          <p className="quem">{dados ? dados.aparelhos.toLocaleString("pt-BR") : "…"} aparelhos</p>
+          <p className="quem">{dados ? dados.agora.toLocaleString("pt-BR") : "…"} {dados?.agora === 1 ? "IP" : "IPs"}</p>
           <p className="legenda">{dados?.nota}</p>
+        </section>
+        <section className="ledger" aria-labelledby="ips-audiencia">
+          <h2 id="ips-audiencia">Por IP</h2>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">IP</th>
+                <th scope="col">Cidade</th>
+                <th scope="col">UF</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(dados?.ips || []).map((linha) => (
+                <tr key={linha.ip}>
+                  <th className="numeros" scope="row">{linha.ip}</th>
+                  <td>{linha.cidade}</td>
+                  <td>{linha.uf}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </section>
         <section className="ledger" aria-labelledby="ufs-audiencia">
           <h2 id="ufs-audiencia">Por UF</h2>

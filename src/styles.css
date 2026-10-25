@@ -483,6 +483,14 @@ main[hidden] { display: none; }
   white-space: nowrap;
 }
 
+.ledger th.numeros {
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: normal;
+  word-break: break-all;
+}
+
 .mini { width: min(180px, 28vw); height: 14px; }
 
 .linha-uf { cursor: pointer; }
