@@ -118,7 +118,93 @@ button, input, select { font: inherit; color: inherit; }
   text-align: right;
 }
 
-.hora { display: block; }
+.hora { display: block; font-variant-numeric: tabular-nums; }
+
+.portada {
+  min-height: calc(100vh - 82px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 36px 28px 72px;
+}
+
+.portada-olho {
+  margin: 0 0 12px;
+  color: var(--coral);
+  font-family: "Archivo Black", sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portada h1 {
+  margin: 0;
+  max-width: 12em;
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.digitos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 32px 0 8px;
+}
+
+.digitos p { margin: 0; }
+
+.digitos b {
+  display: block;
+  border-top: 2px solid var(--coral);
+  padding-top: 12px;
+  font-family: "Archivo Black", sans-serif;
+  font-size: clamp(3rem, 12vw, 6.5rem);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.digitos span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: "Archivo Black", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portada-nota {
+  max-width: 38em;
+  margin: 22px 0 0;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+}
+
+.entrar {
+  align-self: flex-start;
+  margin-top: 28px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 1px solid var(--mark);
+  background: transparent;
+  color: var(--paper);
+  font-family: "Archivo Black", sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.entrar:hover { background: var(--accent-soft); }
+
+main[hidden] { display: none; }
 
 .instalar {
   min-height: 40px;
@@ -425,6 +511,7 @@ button, input, select { font: inherit; color: inherit; }
 }
 
 @media (max-width: 800px) {
+  .portada { padding: 28px 16px 56px; }
   .topo { padding: 14px 16px; }
   .marca img { height: 36px; }
   .marca span { display: none; }

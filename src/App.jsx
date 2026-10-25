@@ -1,7 +1,42 @@
 import { Fragment, useEffect, useMemo, useState } from "react"
+import { restante } from "../shared/abertura.mjs"
 import { REGIOES, fraseBrasil } from "../shared/apuracao.mjs"
 import { familia, fatia, pp, quem, rotuloMovimento, votos } from "./format.js"
 import { pulso } from "./presenca.js"
+
+function useAgora() {
+  const [agora, setAgora] = useState(() => Date.now())
+  useEffect(() => {
+    const id = window.setInterval(() => setAgora(Date.now()), 1000)
+    return () => window.clearInterval(id)
+  }, [])
+  return agora
+}
+
+function Portada({ agora, onEntrar }) {
+  const falta = restante(agora)
+  return (
+    <section className="portada" aria-labelledby="portada-titulo">
+      <p className="portada-olho">Horário de Brasília</p>
+      <h1 id="portada-titulo">
+        {falta.aberto ? "Já são 17h. O arquivo ainda não trouxe voto nominal." : "O segundo turno abre às 17h."}
+      </h1>
+      {falta.aberto ? (
+        <p className="portada-nota">A mesa entra sozinha no instante em que o TSE gravar o primeiro voto.</p>
+      ) : (
+        <div className="digitos" role="timer" aria-label={`${falta.horas} horas, ${falta.minutos} minutos e ${falta.segundos} segundos`}>
+          <p><b>{falta.horas}</b><span>horas</span></p>
+          <p><b>{falta.minutos}</b><span>minutos</span></p>
+          <p><b>{falta.segundos}</b><span>segundos</span></p>
+        </div>
+      )}
+      <p className="portada-nota">
+        O carimbo 13/10/2026 17:42:47 é a hora em que o TSE gerou o arquivo vazio do segundo turno. Ele fica parado até o tribunal regravar esse arquivo.
+      </p>
+      <button type="button" className="entrar" onClick={onEntrar}>Ver o primeiro turno</button>
+    </section>
+  )
+}
 
 function useEstreito() {
   const consulta = "(max-width: 860px)"
@@ -118,7 +153,9 @@ export function App() {
   const [aberta, setAberta] = useState(null)
   const [instalar, setInstalar] = useState(null)
   const [dicaIos, setDicaIos] = useState(false)
+  const [entrou, setEntrou] = useState(() => sessionStorage.getItem("ie-entrada") === "1")
   const estreito = useEstreito()
+  const agora = useAgora()
 
   useEffect(() => pulso(), [])
 
@@ -214,9 +251,18 @@ export function App() {
   }, [ufs, regiao, movimento, busca, soFirme, ordem])
 
   const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa das 27 UFs."
-  const relogio = painel?.relogio?.hora
-    ? `TSE ${painel.relogio.data} ${painel.relogio.hora}`
-    : "Aguardando o relógio do TSE"
+  const comVoto = (brasil?.lula2 || 0) + (brasil?.flavio2 || 0) > 0
+  const falta = restante(agora)
+  const relogio = comVoto && painel?.relogio?.hora
+    ? `Arquivo TSE ${painel.relogio.data} ${painel.relogio.hora}`
+    : falta.aberto
+      ? "Aguardando voto no arquivo"
+      : `Abre em ${falta.horas}:${falta.minutos}:${falta.segundos}`
+
+  function entrar() {
+    sessionStorage.setItem("ie-entrada", "1")
+    setEntrou(true)
+  }
 
   function escolherUf(uf) {
     setBusca((atual) => (atual.toUpperCase() === uf ? "" : uf))
@@ -250,7 +296,8 @@ export function App() {
           <span className="hora">{relogio}</span>
         </p>
       </header>
-      <main className="miolo" id="mesa">
+      {!comVoto && !entrou ? <Portada agora={agora} onEntrar={entrar} /> : null}
+      <main className="miolo" id="mesa" hidden={!comVoto && !entrou}>
         {falha ? (
           <p className="aviso" role="alert">A sala perdeu a leitura desta vez. A página tenta de novo em alguns segundos.</p>
         ) : null}
