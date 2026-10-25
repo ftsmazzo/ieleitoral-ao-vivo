@@ -166,6 +166,7 @@ servidor.listen(porta, () => {
   console.log(`IEleitoral Ao Vivo em http://localhost:${porta}`)
 })
 
+publicar(painel)
 await atualizar()
 setInterval(() => {
   atualizar()

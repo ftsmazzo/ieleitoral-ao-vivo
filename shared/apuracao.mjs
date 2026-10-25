@@ -86,9 +86,9 @@ export function fraseBrasil(m1, m2) {
   const antes = lider(m1)
   const pp = Math.abs(pontos(m2)).toLocaleString("pt-BR", { maximumFractionDigits: 1, minimumFractionDigits: 1 })
   if (antes && agora && antes !== agora) {
-    return `${agora} passou à frente nas 27 UFs, por ${pp} pontos.`
+    return `${agora} passou à frente no total, por ${pp} pontos.`
   }
-  if (!agora) return "Empate na soma das 27 UFs."
+  if (!agora) return "Empate no total."
   const delta = pontos(m2) - pontos(m1)
   const abs = Math.abs(delta).toLocaleString("pt-BR", { maximumFractionDigits: 1, minimumFractionDigits: 1 })
   if (Math.abs(delta) < 0.05) return `${agora} segue à frente, por ${pp} pontos.`

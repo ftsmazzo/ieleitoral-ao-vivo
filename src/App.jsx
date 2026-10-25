@@ -72,6 +72,86 @@ function Trilho({ lula, flavio, largo = false }) {
   )
 }
 
+function ordenar(lista, ordem) {
+  const delta = (linha) => (linha.margem2 == null ? null : Math.abs(linha.margem2 - linha.margem1))
+  lista.sort((a, b) => {
+    if (ordem === "uf") return a.nome.localeCompare(b.nome, "pt-BR")
+    if (ordem === "apurado") return (b.pct || 0) - (a.pct || 0)
+    if (ordem === "margem") return Math.abs(b.margem2 || 0) - Math.abs(a.margem2 || 0)
+    const da = delta(a)
+    const db = delta(b)
+    if (da == null && db == null) return Math.abs(a.margem1 || 0) - Math.abs(b.margem1 || 0)
+    if (da == null) return 1
+    if (db == null) return -1
+    return db - da
+  })
+  return lista
+}
+
+function Tabela({ titulo, rotulo, linhas, aberta, onAbrir, vazio }) {
+  return (
+    <section className="ledger" aria-labelledby={titulo}>
+      <h2 id={titulo}>{rotulo}</h2>
+      {linhas.length === 0 ? (
+        <p className="vazio">{vazio}</p>
+      ) : (
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Lugar</th>
+              <th scope="col">1º turno</th>
+              <th scope="col">2º turno</th>
+              <th scope="col">Movimento</th>
+              <th scope="col">Apurado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {linhas.map((linha) => {
+              const chave = linha.uf || linha.cd
+              const abriu = aberta === chave
+              const codigo = familia(linha.movimento)
+              const carimbo = linha.movimento.endsWith("parcial") ? "parcial" : codigo
+              return (
+                <Fragment key={chave}>
+                  <tr className="linha-uf" aria-expanded={abriu} onClick={() => onAbrir(abriu ? null : chave)}>
+                    <th scope="row">
+                      {linha.uf ? <span className="sigla">{linha.uf}</span> : null}
+                      <span className={linha.uf ? "nome-uf" : "sigla cidade"}>{linha.nome}</span>
+                      {linha.japao ? <span className="nome-uf">Japão</span> : null}
+                    </th>
+                    <td data-label="1º turno">
+                      <Trilho lula={linha.lula1} flavio={linha.flavio1} />
+                      <span className="numeros">{pp(linha.margem1)}</span>
+                    </td>
+                    <td data-label="2º turno">
+                      <Trilho lula={linha.lula2} flavio={linha.flavio2} />
+                      <span className="numeros">{pp(linha.margem2)}</span>
+                    </td>
+                    <td data-label="Movimento">
+                      <span className={`carimbo ${carimbo}`}>{rotuloMovimento(linha.movimento)}</span>
+                    </td>
+                    <td className="numeros" data-label="Apurado">
+                      {linha.pct == null ? "—" : `${linha.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
+                    </td>
+                  </tr>
+                  {abriu ? (
+                    <tr className="detalhe">
+                      <td colSpan="5">
+                        1º turno: Lula {votos(linha.lula1)} · Flávio {votos(linha.flavio1)}. 2º turno: Lula {votos(linha.lula2)} · Flávio {votos(linha.flavio2)}.
+                        {linha.movimento.endsWith("parcial") ? " Carimbo parcial: ainda não chegou a 95% das seções." : ""}
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
+              )
+            })}
+          </tbody>
+        </table>
+      )}
+    </section>
+  )
+}
+
 function escala(valor) {
   const ppValor = (valor || 0) * 100
   const limitado = Math.max(-40, Math.min(40, ppValor))
@@ -223,31 +303,31 @@ export function App() {
   const ufs = painel?.ufs || []
   const brasil = painel?.brasil
 
+  const exterior = painel?.exterior
   const visiveis = useMemo(() => {
     const texto = busca.trim().toLowerCase()
     const lista = ufs.filter((linha) => {
+      if (regiao === "Estrangeiro") return false
       if (regiao !== "todas" && linha.regiao !== regiao) return false
       if (movimento !== "todas" && familia(linha.movimento) !== movimento) return false
       if (soFirme && (linha.pct == null || linha.pct < 95)) return false
       if (!texto) return true
       return linha.uf.toLowerCase().includes(texto) || linha.nome.toLowerCase().includes(texto)
     })
-    const delta = (linha) => (linha.margem2 == null ? null : Math.abs(linha.margem2 - linha.margem1))
-    lista.sort((a, b) => {
-      if (ordem === "uf") return a.nome.localeCompare(b.nome, "pt-BR")
-      if (ordem === "apurado") return (b.pct || 0) - (a.pct || 0)
-      if (ordem === "margem") return Math.abs(b.margem2 || 0) - Math.abs(a.margem2 || 0)
-      const da = delta(a)
-      const db = delta(b)
-      if (da == null && db == null) return Math.abs(a.margem1) - Math.abs(b.margem1)
-      if (da == null) return 1
-      if (db == null) return -1
-      return db - da
-    })
-    return lista
+    return ordenar(lista, ordem)
   }, [ufs, regiao, movimento, busca, soFirme, ordem])
+  const cidades = useMemo(() => {
+    const texto = busca.trim().toLowerCase()
+    const lista = (exterior?.locais || []).filter((linha) => {
+      if (movimento !== "todas" && familia(linha.movimento) !== movimento) return false
+      if (soFirme && (linha.pct == null || linha.pct < 95)) return false
+      if (!texto) return true
+      return linha.nome.toLowerCase().includes(texto)
+    })
+    return ordenar(lista, ordem)
+  }, [exterior, movimento, busca, soFirme, ordem])
 
-  const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa das 27 UFs."
+  const frase = brasil ? fraseBrasil(brasil.margem1, brasil.margem2) : "Carregando a mesa."
   const comVoto = (brasil?.lula2 || 0) + (brasil?.flavio2 || 0) > 0
   const falta = restante(agora)
   const relogio = comVoto && painel?.relogio?.hora
@@ -302,7 +382,7 @@ export function App() {
         <h1 className="tese">{frase}</h1>
         <section className="pista" aria-labelledby="nacional">
           <header>
-            <h2 id="nacional">27 UFs, sem o exterior</h2>
+            <h2 id="nacional">Brasil, com o exterior</h2>
           </header>
           <p className="quem">1º turno · {brasil ? quem(brasil.lula1, brasil.flavio1) : "…"}</p>
           <Trilho largo lula={brasil?.lula1 || 0} flavio={brasil?.flavio1 || 0} />
@@ -312,9 +392,29 @@ export function App() {
             <span><i className="lula" /> Lula</span>
             <span><i className="flavio" /> Flávio</span>
             <span>O risco coral é o empate entre os dois.</span>
+            <span>A soma junta as 27 UFs e o estrangeiro.</span>
           </p>
         </section>
-        {estreito ? null : <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />}
+        {exterior && (regiao === "todas" || regiao === "Estrangeiro") ? (
+          <section className="pista" aria-labelledby="estrangeiro">
+            <header>
+              <h2 id="estrangeiro">Estrangeiro</h2>
+            </header>
+            <p className="quem">1º turno · {quem(exterior.lula1, exterior.flavio1)}</p>
+            <Trilho largo lula={exterior.lula1} flavio={exterior.flavio1} />
+            <p className="quem">2º turno · {quem(exterior.lula2, exterior.flavio2)}</p>
+            <Trilho largo lula={exterior.lula2} flavio={exterior.flavio2} />
+            <p className="quem">Japão · 1º turno · {quem(exterior.japao.lula1, exterior.japao.flavio1)}</p>
+            <Trilho largo lula={exterior.japao.lula1} flavio={exterior.japao.flavio1} />
+            <p className="quem">
+              Japão · 2º turno · {quem(exterior.japao.lula2, exterior.japao.flavio2)}
+              {exterior.japao.pct == null ? "" : ` · ${exterior.japao.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
+            </p>
+            <Trilho largo lula={exterior.japao.lula2} flavio={exterior.japao.flavio2} />
+            <p className="legenda">Esse recorte entra na soma de cima. Japão reúne Tóquio, Nagóia e Hamamatsu.</p>
+          </section>
+        ) : null}
+        {estreito || regiao === "Estrangeiro" ? null : <Faixa ufs={ufs} ativa={aberta} onEscolher={escolherUf} />}
         <div className="filtros">
           <div className="movimentos" role="group" aria-label="Movimento da margem">
             {MOVIMENTOS.map(([id, nome]) => (
@@ -330,6 +430,7 @@ export function App() {
               {REGIOES.map((nome) => (
                 <option key={nome} value={nome}>{nome}</option>
               ))}
+              <option value="Estrangeiro">Estrangeiro</option>
             </select>
           </label>
           <label className="campo">
@@ -354,85 +455,26 @@ export function App() {
             <span>Só leitura firme</span>
           </label>
         </div>
-        <section className="ledger" aria-labelledby="ledger-titulo">
-          <h2 id="ledger-titulo">Unidades</h2>
-          {visiveis.length === 0 ? (
-            <p className="vazio">Nenhuma UF entrou nesse recorte. Troque o movimento ou limpe a busca.</p>
-          ) : (
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">UF</th>
-                  <th scope="col">1º turno</th>
-                  <th scope="col">2º turno</th>
-                  <th scope="col">
-                    <button
-                      type="button"
-                      aria-sort={ordem === "mexeu" ? "descending" : "none"}
-                      onClick={() => setOrdem("mexeu")}
-                    >
-                      Movimento
-                    </button>
-                  </th>
-                  <th scope="col">
-                    <button
-                      type="button"
-                      aria-sort={ordem === "apurado" ? "descending" : "none"}
-                      onClick={() => setOrdem("apurado")}
-                    >
-                      Apurado
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {visiveis.map((linha) => {
-                  const abriu = aberta === linha.uf
-                  const codigo = familia(linha.movimento)
-                  const carimbo = linha.movimento.endsWith("parcial") ? "parcial" : codigo
-                  return (
-                    <Fragment key={linha.uf}>
-                      <tr
-                        className="linha-uf"
-                        aria-expanded={abriu}
-                        onClick={() => setAberta(abriu ? null : linha.uf)}
-                      >
-                        <th scope="row">
-                          <span className="sigla">{linha.uf}</span>
-                          <span className="nome-uf">{linha.nome}</span>
-                        </th>
-                        <td data-label="1º turno">
-                          <Trilho lula={linha.lula1} flavio={linha.flavio1} />
-                          <span className="numeros">{pp(linha.margem1)}</span>
-                        </td>
-                        <td data-label="2º turno">
-                          <Trilho lula={linha.lula2} flavio={linha.flavio2} />
-                          <span className="numeros">{pp(linha.margem2)}</span>
-                        </td>
-                        <td data-label="Movimento">
-                          <span className={`carimbo ${carimbo}`}>{rotuloMovimento(linha.movimento)}</span>
-                        </td>
-                        <td className="numeros" data-label="Apurado">
-                          {linha.pct == null ? "—" : `${linha.pct.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`}
-                        </td>
-                      </tr>
-                      {abriu ? (
-                        <tr className="detalhe">
-                          <td colSpan="5">
-                            1º turno: Lula {votos(linha.lula1)} · Flávio {votos(linha.flavio1)}. 2º turno: Lula {votos(linha.lula2)} · Flávio {votos(linha.flavio2)}.
-                            {linha.movimento.endsWith("parcial")
-                              ? " Carimbo parcial: esta UF ainda não chegou a 95% das seções."
-                              : ""}
-                          </td>
-                        </tr>
-                      ) : null}
-                    </Fragment>
-                  )
-                })}
-              </tbody>
-            </table>
-          )}
-        </section>
+        {regiao === "Estrangeiro" ? null : (
+          <Tabela
+            titulo="ledger-titulo"
+            rotulo="Unidades"
+            linhas={visiveis}
+            aberta={aberta}
+            onAbrir={setAberta}
+            vazio="Nenhuma UF entrou nesse recorte. Troque o movimento ou limpe a busca."
+          />
+        )}
+        {regiao === "todas" || regiao === "Estrangeiro" ? (
+          <Tabela
+            titulo="exterior-titulo"
+            rotulo="Cidades no exterior"
+            linhas={cidades}
+            aberta={aberta}
+            onAbrir={setAberta}
+            vazio="Nenhuma cidade entrou nesse recorte. Troque o movimento ou limpe a busca."
+          />
+        ) : null}
         {dicaIos ? (
           <p className="legenda">Para deixar na tela de início: Compartilhar, depois Adicionar à Tela de Início.</p>
         ) : null}

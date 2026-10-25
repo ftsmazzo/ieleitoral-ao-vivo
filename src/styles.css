@@ -476,6 +476,8 @@ main[hidden] { display: none; }
   letter-spacing: -0.03em;
 }
 
+.sigla.cidade { font-size: 0.95rem; letter-spacing: 0; }
+
 .nome-uf { display: block; color: var(--muted); font-size: 0.92rem; }
 
 .numeros {

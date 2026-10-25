@@ -1,0 +1,1125 @@
+{
+  "ano": 2026,
+  "turno": 1,
+  "fonte": "resultados.tse.jus.br eleicao 6257 cargo 0001 uf zz",
+  "lula": 157387,
+  "flavio": 143900,
+  "locais": [
+    {
+      "cd": "29254",
+      "nome": "ABIDJÃ",
+      "lula": 24,
+      "flavio": 13
+    },
+    {
+      "cd": "29262",
+      "nome": "ABU DHABI",
+      "lula": 512,
+      "flavio": 659
+    },
+    {
+      "cd": "99198",
+      "nome": "ABUJA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29270",
+      "nome": "ACCRA",
+      "lula": 8,
+      "flavio": 2
+    },
+    {
+      "cd": "99325",
+      "nome": "ADIS ABEBA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29289",
+      "nome": "AMÃ",
+      "lula": 675,
+      "flavio": 59
+    },
+    {
+      "cd": "30457",
+      "nome": "AMSTERDÃ",
+      "lula": 4624,
+      "flavio": 1081
+    },
+    {
+      "cd": "29297",
+      "nome": "ANCARA",
+      "lula": 24,
+      "flavio": 7
+    },
+    {
+      "cd": "29300",
+      "nome": "ARGEL",
+      "lula": 27,
+      "flavio": 3
+    },
+    {
+      "cd": "29319",
+      "nome": "ARTIGAS",
+      "lula": 104,
+      "flavio": 227
+    },
+    {
+      "cd": "29327",
+      "nome": "ASSUNÇÃO",
+      "lula": 250,
+      "flavio": 740
+    },
+    {
+      "cd": "39241",
+      "nome": "ASTANA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29335",
+      "nome": "ATENAS",
+      "lula": 196,
+      "flavio": 230
+    },
+    {
+      "cd": "39080",
+      "nome": "ATLANTA",
+      "lula": 1221,
+      "flavio": 3276
+    },
+    {
+      "cd": "99171",
+      "nome": "BAGDÁ",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "39128",
+      "nome": "BAKU",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "99350",
+      "nome": "BAMAKO",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29343",
+      "nome": "BANGKOK",
+      "lula": 40,
+      "flavio": 51
+    },
+    {
+      "cd": "29351",
+      "nome": "BARCELONA",
+      "lula": 3692,
+      "flavio": 995
+    },
+    {
+      "cd": "99473",
+      "nome": "BAREIN",
+      "lula": 17,
+      "flavio": 27
+    },
+    {
+      "cd": "29360",
+      "nome": "BEIRUTE",
+      "lula": 2538,
+      "flavio": 1138
+    },
+    {
+      "cd": "29378",
+      "nome": "BELGRADO",
+      "lula": 30,
+      "flavio": 13
+    },
+    {
+      "cd": "38881",
+      "nome": "BELMOPAN",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29386",
+      "nome": "BERLIM",
+      "lula": 6504,
+      "flavio": 925
+    },
+    {
+      "cd": "29394",
+      "nome": "BISSAU",
+      "lula": 17,
+      "flavio": 17
+    },
+    {
+      "cd": "29408",
+      "nome": "BOGOTÁ",
+      "lula": 245,
+      "flavio": 252
+    },
+    {
+      "cd": "29416",
+      "nome": "BOSTON",
+      "lula": 3919,
+      "flavio": 11228
+    },
+    {
+      "cd": "39209",
+      "nome": "BRATISLAVA",
+      "lula": 35,
+      "flavio": 13
+    },
+    {
+      "cd": "39187",
+      "nome": "BRAZZAVILLE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29424",
+      "nome": "BRIDGETOWN",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29432",
+      "nome": "BRUXELAS",
+      "lula": 2516,
+      "flavio": 1959
+    },
+    {
+      "cd": "29440",
+      "nome": "BUCARESTE",
+      "lula": 31,
+      "flavio": 22
+    },
+    {
+      "cd": "29459",
+      "nome": "BUDAPESTE",
+      "lula": 331,
+      "flavio": 93
+    },
+    {
+      "cd": "29467",
+      "nome": "BUENOS AIRES",
+      "lula": 3507,
+      "flavio": 1449
+    },
+    {
+      "cd": "29475",
+      "nome": "CAIENA",
+      "lula": 484,
+      "flavio": 518
+    },
+    {
+      "cd": "29483",
+      "nome": "CAIRO",
+      "lula": 46,
+      "flavio": 12
+    },
+    {
+      "cd": "29491",
+      "nome": "CAMBERRA",
+      "lula": 1478,
+      "flavio": 805
+    },
+    {
+      "cd": "30651",
+      "nome": "CANTÃO",
+      "lula": 48,
+      "flavio": 35
+    },
+    {
+      "cd": "29505",
+      "nome": "CARACAS",
+      "lula": 128,
+      "flavio": 125
+    },
+    {
+      "cd": "99384",
+      "nome": "CASTRIES",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29513",
+      "nome": "CHICAGO",
+      "lula": 1485,
+      "flavio": 953
+    },
+    {
+      "cd": "29521",
+      "nome": "CHUY",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29530",
+      "nome": "CIDADE DO CABO",
+      "lula": 90,
+      "flavio": 58
+    },
+    {
+      "cd": "29556",
+      "nome": "CIUDAD DEL ESTE",
+      "lula": 202,
+      "flavio": 2239
+    },
+    {
+      "cd": "29564",
+      "nome": "CIUDAD GUAYANA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "99210",
+      "nome": "COBIJA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29572",
+      "nome": "COCHABAMBA",
+      "lula": 57,
+      "flavio": 119
+    },
+    {
+      "cd": "30929",
+      "nome": "COLOMBO",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "38903",
+      "nome": "CONACRI",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29580",
+      "nome": "CONCEPCIÓN",
+      "lula": 2,
+      "flavio": 32
+    },
+    {
+      "cd": "29599",
+      "nome": "COPENHAGUE",
+      "lula": 1166,
+      "flavio": 195
+    },
+    {
+      "cd": "29602",
+      "nome": "CÓRDOBA",
+      "lula": 182,
+      "flavio": 159
+    },
+    {
+      "cd": "38920",
+      "nome": "COTONOU",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29610",
+      "nome": "DACAR",
+      "lula": 51,
+      "flavio": 24
+    },
+    {
+      "cd": "29629",
+      "nome": "DACCA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29637",
+      "nome": "DAMASCO",
+      "lula": 97,
+      "flavio": 7
+    },
+    {
+      "cd": "38962",
+      "nome": "DAR ES SALAAM",
+      "lula": 11,
+      "flavio": 5
+    },
+    {
+      "cd": "29645",
+      "nome": "DÍLI",
+      "lula": 16,
+      "flavio": 27
+    },
+    {
+      "cd": "29653",
+      "nome": "DOHA",
+      "lula": 147,
+      "flavio": 173
+    },
+    {
+      "cd": "29661",
+      "nome": "DUBLIN",
+      "lula": 6025,
+      "flavio": 1559
+    },
+    {
+      "cd": "99503",
+      "nome": "EDIMBURGO",
+      "lula": 488,
+      "flavio": 139
+    },
+    {
+      "cd": "29670",
+      "nome": "ENCARNACIÓN",
+      "lula": 14,
+      "flavio": 122
+    },
+    {
+      "cd": "29688",
+      "nome": "ESTOCOLMO",
+      "lula": 1770,
+      "flavio": 505
+    },
+    {
+      "cd": "30961",
+      "nome": "FARO",
+      "lula": 1097,
+      "flavio": 1305
+    },
+    {
+      "cd": "29696",
+      "nome": "FRANKFURT",
+      "lula": 3657,
+      "flavio": 1320
+    },
+    {
+      "cd": "30669",
+      "nome": "GABORONE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29700",
+      "nome": "GENEBRA",
+      "lula": 2298,
+      "flavio": 2226
+    },
+    {
+      "cd": "29718",
+      "nome": "GEORGETOWN",
+      "lula": 7,
+      "flavio": 43
+    },
+    {
+      "cd": "98000",
+      "nome": "GUATEMALA",
+      "lula": 33,
+      "flavio": 67
+    },
+    {
+      "cd": "29742",
+      "nome": "HAMAMATSU",
+      "lula": 884,
+      "flavio": 4698
+    },
+    {
+      "cd": "29750",
+      "nome": "HANÓI",
+      "lula": 13,
+      "flavio": 14
+    },
+    {
+      "cd": "29769",
+      "nome": "HARARE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30902",
+      "nome": "HARTFORD",
+      "lula": 557,
+      "flavio": 1207
+    },
+    {
+      "cd": "29777",
+      "nome": "HAVANA",
+      "lula": 36,
+      "flavio": 1
+    },
+    {
+      "cd": "29785",
+      "nome": "HELSINQUE",
+      "lula": 475,
+      "flavio": 155
+    },
+    {
+      "cd": "29793",
+      "nome": "HONG KONG",
+      "lula": 99,
+      "flavio": 105
+    },
+    {
+      "cd": "29807",
+      "nome": "HOUSTON",
+      "lula": 1265,
+      "flavio": 2586
+    },
+    {
+      "cd": "29815",
+      "nome": "IAUNDÊ",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "38989",
+      "nome": "IEREVAN",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29823",
+      "nome": "IQUITOS",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29831",
+      "nome": "ISLAMABADE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "39306",
+      "nome": "ISTAMBUL",
+      "lula": 90,
+      "flavio": 30
+    },
+    {
+      "cd": "29840",
+      "nome": "JACARTA",
+      "lula": 8,
+      "flavio": 19
+    },
+    {
+      "cd": "29173",
+      "nome": "KATMANDU",
+      "lula": 1,
+      "flavio": 11
+    },
+    {
+      "cd": "29858",
+      "nome": "KIEV",
+      "lula": 4,
+      "flavio": 19
+    },
+    {
+      "cd": "99430",
+      "nome": "KINGSTON-JAMAICA",
+      "lula": 4,
+      "flavio": 14
+    },
+    {
+      "cd": "29874",
+      "nome": "KINSHASA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29882",
+      "nome": "KUAITE",
+      "lula": 54,
+      "flavio": 12
+    },
+    {
+      "cd": "29890",
+      "nome": "KUALA LUMPUR",
+      "lula": 44,
+      "flavio": 27
+    },
+    {
+      "cd": "29904",
+      "nome": "LA PAZ",
+      "lula": 98,
+      "flavio": 106
+    },
+    {
+      "cd": "29912",
+      "nome": "LAGOS",
+      "lula": 26,
+      "flavio": 6
+    },
+    {
+      "cd": "29939",
+      "nome": "LIBREVILLE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "99341",
+      "nome": "LILONGUE",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29947",
+      "nome": "LIMA",
+      "lula": 248,
+      "flavio": 380
+    },
+    {
+      "cd": "29955",
+      "nome": "LISBOA",
+      "lula": 14948,
+      "flavio": 10548
+    },
+    {
+      "cd": "39160",
+      "nome": "LIUBLIANA",
+      "lula": 61,
+      "flavio": 25
+    },
+    {
+      "cd": "29963",
+      "nome": "LOMÉ",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "29971",
+      "nome": "LONDRES",
+      "lula": 8152,
+      "flavio": 5227
+    },
+    {
+      "cd": "29980",
+      "nome": "LOS ANGELES",
+      "lula": 2131,
+      "flavio": 1994
+    },
+    {
+      "cd": "29998",
+      "nome": "LUANDA",
+      "lula": 147,
+      "flavio": 101
+    },
+    {
+      "cd": "99287",
+      "nome": "LUSACA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30066",
+      "nome": "MADRI",
+      "lula": 3571,
+      "flavio": 2343
+    },
+    {
+      "cd": "39263",
+      "nome": "MALABO",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30074",
+      "nome": "MANÁGUA",
+      "lula": 33,
+      "flavio": 35
+    },
+    {
+      "cd": "30082",
+      "nome": "MANILA",
+      "lula": 26,
+      "flavio": 33
+    },
+    {
+      "cd": "30090",
+      "nome": "MAPUTO",
+      "lula": 89,
+      "flavio": 113
+    },
+    {
+      "cd": "99511",
+      "nome": "MARSELHA",
+      "lula": 715,
+      "flavio": 104
+    },
+    {
+      "cd": "39102",
+      "nome": "MASCATE",
+      "lula": 12,
+      "flavio": 20
+    },
+    {
+      "cd": "39004",
+      "nome": "MENDOZA",
+      "lula": 49,
+      "flavio": 55
+    },
+    {
+      "cd": "30104",
+      "nome": "MEXICO",
+      "lula": 585,
+      "flavio": 589
+    },
+    {
+      "cd": "30112",
+      "nome": "MIAMI",
+      "lula": 2260,
+      "flavio": 8914
+    },
+    {
+      "cd": "30120",
+      "nome": "MILÃO",
+      "lula": 3593,
+      "flavio": 2908
+    },
+    {
+      "cd": "30147",
+      "nome": "MONTEVIDÉU",
+      "lula": 686,
+      "flavio": 465
+    },
+    {
+      "cd": "30155",
+      "nome": "MONTREAL",
+      "lula": 3823,
+      "flavio": 1456
+    },
+    {
+      "cd": "30163",
+      "nome": "MOSCOU",
+      "lula": 49,
+      "flavio": 25
+    },
+    {
+      "cd": "30171",
+      "nome": "MUMBAI",
+      "lula": 5,
+      "flavio": 1
+    },
+    {
+      "cd": "30180",
+      "nome": "MUNIQUE",
+      "lula": 3364,
+      "flavio": 1287
+    },
+    {
+      "cd": "30198",
+      "nome": "NAGÓIA",
+      "lula": 2022,
+      "flavio": 11480
+    },
+    {
+      "cd": "30201",
+      "nome": "NAIRÓBI",
+      "lula": 26,
+      "flavio": 17
+    },
+    {
+      "cd": "99180",
+      "nome": "NASSAU",
+      "lula": 6,
+      "flavio": 10
+    },
+    {
+      "cd": "39322",
+      "nome": "NICOSIA",
+      "lula": 24,
+      "flavio": 20
+    },
+    {
+      "cd": "30210",
+      "nome": "NOVA DELHI",
+      "lula": 24,
+      "flavio": 26
+    },
+    {
+      "cd": "30228",
+      "nome": "NOVA YORK",
+      "lula": 4570,
+      "flavio": 4684
+    },
+    {
+      "cd": "99490",
+      "nome": "ORLANDO",
+      "lula": 1332,
+      "flavio": 6981
+    },
+    {
+      "cd": "30244",
+      "nome": "OSLO",
+      "lula": 592,
+      "flavio": 198
+    },
+    {
+      "cd": "30252",
+      "nome": "OTTAWA",
+      "lula": 794,
+      "flavio": 395
+    },
+    {
+      "cd": "30260",
+      "nome": "PANAMA",
+      "lula": 236,
+      "flavio": 336
+    },
+    {
+      "cd": "30279",
+      "nome": "PARAMARIBO",
+      "lula": 121,
+      "flavio": 366
+    },
+    {
+      "cd": "30287",
+      "nome": "PARIS",
+      "lula": 8054,
+      "flavio": 1654
+    },
+    {
+      "cd": "30295",
+      "nome": "PASO LOS LIBRES",
+      "lula": 2,
+      "flavio": 3
+    },
+    {
+      "cd": "30309",
+      "nome": "PEDRO JUAN CABALLERO",
+      "lula": 59,
+      "flavio": 219
+    },
+    {
+      "cd": "30317",
+      "nome": "PEQUIM",
+      "lula": 104,
+      "flavio": 22
+    },
+    {
+      "cd": "30325",
+      "nome": "PORT OF SPAIN",
+      "lula": 4,
+      "flavio": 10
+    },
+    {
+      "cd": "30341",
+      "nome": "PORTO",
+      "lula": 10356,
+      "flavio": 7559
+    },
+    {
+      "cd": "30333",
+      "nome": "PORTO PRÍNCIPE",
+      "lula": 5,
+      "flavio": 0
+    },
+    {
+      "cd": "30350",
+      "nome": "PRAGA",
+      "lula": 279,
+      "flavio": 70
+    },
+    {
+      "cd": "30368",
+      "nome": "PRAIA",
+      "lula": 39,
+      "flavio": 20
+    },
+    {
+      "cd": "30376",
+      "nome": "PRETÓRIA",
+      "lula": 62,
+      "flavio": 172
+    },
+    {
+      "cd": "99155",
+      "nome": "PUERTO IGUAZÚ",
+      "lula": 7,
+      "flavio": 15
+    },
+    {
+      "cd": "99236",
+      "nome": "PUERTO QUIJARRO",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "99295",
+      "nome": "PYONGYANG",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30392",
+      "nome": "QUITO",
+      "lula": 130,
+      "flavio": 171
+    },
+    {
+      "cd": "30406",
+      "nome": "RABAT",
+      "lula": 30,
+      "flavio": 6
+    },
+    {
+      "cd": "30414",
+      "nome": "RAMALLAH",
+      "lula": 1078,
+      "flavio": 46
+    },
+    {
+      "cd": "30422",
+      "nome": "RIADE",
+      "lula": 52,
+      "flavio": 22
+    },
+    {
+      "cd": "30430",
+      "nome": "RIO BRANCO",
+      "lula": 7,
+      "flavio": 9
+    },
+    {
+      "cd": "99244",
+      "nome": "RIVERA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30449",
+      "nome": "ROMA",
+      "lula": 2555,
+      "flavio": 1478
+    },
+    {
+      "cd": "99147",
+      "nome": "SAINT JOHNS",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30465",
+      "nome": "SALTO DEL GUAIRÁ",
+      "lula": 19,
+      "flavio": 496
+    },
+    {
+      "cd": "30473",
+      "nome": "SANTA CRUZ DE LA SIERRA",
+      "lula": 194,
+      "flavio": 1162
+    },
+    {
+      "cd": "99279",
+      "nome": "SANTA ELENA DE UAIRÉN",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30481",
+      "nome": "SANTIAGO",
+      "lula": 928,
+      "flavio": 809
+    },
+    {
+      "cd": "30490",
+      "nome": "SÃO DOMINGOS",
+      "lula": 65,
+      "flavio": 106
+    },
+    {
+      "cd": "30503",
+      "nome": "SÃO FRANCISCO",
+      "lula": 2176,
+      "flavio": 1323
+    },
+    {
+      "cd": "30511",
+      "nome": "SÃO JOSÉ",
+      "lula": 173,
+      "flavio": 159
+    },
+    {
+      "cd": "30520",
+      "nome": "SÃO SALVADOR",
+      "lula": 23,
+      "flavio": 48
+    },
+    {
+      "cd": "39225",
+      "nome": "SÃO TOMÉ",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30988",
+      "nome": "SARAJEVO",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30538",
+      "nome": "SEUL",
+      "lula": 123,
+      "flavio": 72
+    },
+    {
+      "cd": "29548",
+      "nome": "SINGAPURA",
+      "lula": 190,
+      "flavio": 92
+    },
+    {
+      "cd": "30546",
+      "nome": "SÓFIA",
+      "lula": 34,
+      "flavio": 8
+    },
+    {
+      "cd": "99333",
+      "nome": "ST GEORGES DE LOYAPOCK",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30562",
+      "nome": "SYDNEY",
+      "lula": 3084,
+      "flavio": 1774
+    },
+    {
+      "cd": "30570",
+      "nome": "TAIPÉ",
+      "lula": 77,
+      "flavio": 107
+    },
+    {
+      "cd": "99317",
+      "nome": "TALIN",
+      "lula": 142,
+      "flavio": 19
+    },
+    {
+      "cd": "99104",
+      "nome": "TBILISI",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30597",
+      "nome": "TEERÃ",
+      "lula": 14,
+      "flavio": 11
+    },
+    {
+      "cd": "30600",
+      "nome": "TEGUCIGALPA",
+      "lula": 17,
+      "flavio": 34
+    },
+    {
+      "cd": "30619",
+      "nome": "TEL AVIV",
+      "lula": 92,
+      "flavio": 523
+    },
+    {
+      "cd": "99139",
+      "nome": "TIRANA",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "30627",
+      "nome": "TÓQUIO",
+      "lula": 2328,
+      "flavio": 8423
+    },
+    {
+      "cd": "30635",
+      "nome": "TORONTO",
+      "lula": 4670,
+      "flavio": 3319
+    },
+    {
+      "cd": "30686",
+      "nome": "TRÍPOLI",
+      "lula": 2,
+      "flavio": 0
+    },
+    {
+      "cd": "30708",
+      "nome": "TUNIS",
+      "lula": 12,
+      "flavio": 9
+    },
+    {
+      "cd": "39284",
+      "nome": "UAGADUGU",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "39063",
+      "nome": "VANCOUVER",
+      "lula": 3221,
+      "flavio": 1873
+    },
+    {
+      "cd": "30740",
+      "nome": "VARSÓVIA",
+      "lula": 183,
+      "flavio": 65
+    },
+    {
+      "cd": "30767",
+      "nome": "VIENA",
+      "lula": 979,
+      "flavio": 311
+    },
+    {
+      "cd": "30783",
+      "nome": "WASHINGTON",
+      "lula": 2419,
+      "flavio": 1858
+    },
+    {
+      "cd": "30805",
+      "nome": "WELLINGTON",
+      "lula": 234,
+      "flavio": 64
+    },
+    {
+      "cd": "30821",
+      "nome": "WINDHOEK",
+      "lula": 6,
+      "flavio": 5
+    },
+    {
+      "cd": "30848",
+      "nome": "XANGAI",
+      "lula": 116,
+      "flavio": 41
+    },
+    {
+      "cd": "99376",
+      "nome": "YANGON",
+      "lula": 0,
+      "flavio": 0
+    },
+    {
+      "cd": "39020",
+      "nome": "ZAGREB",
+      "lula": 29,
+      "flavio": 17
+    },
+    {
+      "cd": "30864",
+      "nome": "ZURIQUE",
+      "lula": 2896,
+      "flavio": 2299
+    }
+  ]
+}
