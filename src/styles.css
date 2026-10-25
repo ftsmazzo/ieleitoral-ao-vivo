@@ -36,8 +36,7 @@
   --accent-soft: rgba(74, 184, 72, 0.16);
   --lula: #ff4b47;
   --flavio: #8ec4e8;
-  --barra: #f0a05a;
-  --barra-resto: #8a4e28;
+  --meio: #f0a05a;
   --virou: #f15d5a;
   --aumentou: #b7d36a;
   --diminuiu: #e2b34a;
@@ -320,7 +319,7 @@ main[hidden] { display: none; }
   bottom: -5px;
   left: 50%;
   width: 2px;
-  background: var(--coral);
+  background: var(--meio);
 }
 
 .trilho b {
@@ -328,8 +327,8 @@ main[hidden] { display: none; }
   height: 100%;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.trilho b.lula { background: var(--barra); }
-.trilho b.flavio { background: var(--barra-resto); }
+.trilho b.lula { background: var(--lula); }
+.trilho b.flavio { background: var(--flavio); }
 
 .trilho.largo { height: 42px; }
 
